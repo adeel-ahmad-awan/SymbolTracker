@@ -54,7 +54,6 @@ class CompanySymbolService
         $endDate = $data["end_date"];
         $email = $data["email"];
 
-//        dd($startDate->format('m/d/Y'));
         try {
             $response = $this->client->request(
                 self::HTTP_GET,
@@ -73,17 +72,21 @@ class CompanySymbolService
             $statusCode = $response->getStatusCode();
             $content = $response->toArray();
             if ($statusCode == Response::HTTP_OK) {
-                return $this->filterHistoricalQuoteData($content, $startDate, $endDate);
+                return [
+                    'symbol' => $symbol->getSymbol(),
+                    "email" => $email,
+                    "quoteData" => $this->filterHistoricalQuoteData($content, $startDate, $endDate),
+                    "startDate" => $startDate->format('Y-m-d'),
+                    "endDate" => $endDate->format('Y-m-d'),
+                ];
             }
         } catch (\Exception $exception) {
             $this->logger->error('error: ' . $exception->getMessage());
-            dd($exception);
+            return ($exception);
         } catch (TransportExceptionInterface $e) {
             $this->logger->error('error: ' . $e->getMessage());
-            dd($e);
+            return ($e);
         }
-        return  null;
-
     }
 
 

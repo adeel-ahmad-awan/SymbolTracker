@@ -36,7 +36,10 @@ class CompanySymbolFormType extends AbstractType
             ])
             ->add('start_date', DateType::class, [
                 'widget' => 'single_text',
-                'attr' => ['class' => 'js-datepicker'],
+                'attr' => [
+                    'class' => 'js-datepicker',
+                    'max' => date('Y-m-d'),
+                ],
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
@@ -44,7 +47,10 @@ class CompanySymbolFormType extends AbstractType
             ])
             ->add('end_date', DateType::class, [
                 'widget' => 'single_text',
-                'attr' => ['class' => 'js-datepicker'],
+                'attr' => [
+                    'class' => 'js-datepicker',
+                    'max' => date('Y-m-d'),
+                ],
                 'data' => new \DateTime(),
                 'constraints' => [
                     new Constraints\NotBlank(),

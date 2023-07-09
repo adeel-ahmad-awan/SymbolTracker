@@ -4,6 +4,14 @@
 
 {% block body %}
 
+    {% for flash_message in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger">
+            {{ flash_message|raw }}
+        </div>
+    {% endfor %}
+
+    <h1 class="text-center">{{ symbol }}</h1>
+
     <canvas id="lineChart"></canvas>
 
     <script>
@@ -44,6 +52,4 @@
             }
         });
     </script>
-
-
 {% endblock %}
