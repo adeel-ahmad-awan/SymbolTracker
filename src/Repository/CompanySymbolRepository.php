@@ -38,4 +38,12 @@ class CompanySymbolRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    function isTableEmpty(): bool
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('count(t.id)');
+        $count = $qb->getQuery()->getSingleScalarResult();
+        return !$count;
+    }
 }

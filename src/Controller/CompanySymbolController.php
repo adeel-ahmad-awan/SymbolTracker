@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\CompanySymbolFormType;
+use App\Repository\CompanySymbolRepository;
 use App\Service\CompanySymbolService;
 use App\Service\EmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,8 +20,17 @@ class CompanySymbolController extends AbstractController
         SessionInterface $session,
         CompanySymbolService $symbolService,
         Request $request,
+        CompanySymbolRepository $companySymbolRepository
     ): Response
     {
+        if ($companySymbolRepository->isTableEmpty()) {
+            return $this->render('company_symbol/index.html.twig', [
+                'controller_name' => 'CompanySymbolController',
+                'emptyTable' => "Please run the following command to set the company symbols in database before proceeding",
+                'command' => "php bin/console app:sync-company-symbol"
+            ]);
+        }
+
         $form = $this->createForm(CompanySymbolFormType::class);
         $form-> handleRequest($request);
         try {
@@ -43,30 +53,13 @@ class CompanySymbolController extends AbstractController
     }
 
     #[Route('/show', name: 'app_show_data')]
-    public function displayData(SessionInterface $session, EmailService $emailService): Response
+    public function displayData(SessionInterface $session, EmailService $emailService, CompanySymbolService $symbolService): Response
     {
         $processedData = $session->get('processedData');
         if (!$processedData) {
             $this->addFlash('error', 'Error in data');
             return $this->redirectToRoute('app_company_symbol');
         }
-
-        $chartData = [
-            'labels' => array_reverse(array_column($processedData['quoteData'], 'date')),
-            'datasets' => [
-                [
-                    'label' => 'Open',
-                    'borderWidth' => 1,
-                    'data' => array_reverse(array_column($processedData['quoteData'], 'open')),
-                ],
-                [
-                    'label' => 'Close',
-                    'borderWidth' => 1,
-                    'data' => array_reverse(array_column($processedData['quoteData'], 'close')),
-                ],
-            ],
-        ];
-
 
         try {
             $emailService->sendEmail(
@@ -80,6 +73,8 @@ class CompanySymbolController extends AbstractController
                 'An error occurred in sending email.'
             );
         }
+
+        $chartData = $symbolService->getChartData($processedData);
 
         return $this->render('company_symbol/show.html.twig', [
             'chartData' => $chartData,

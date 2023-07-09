@@ -31,7 +31,7 @@ class CompanySymbolFormType extends AbstractType
                     return $companySymbol->getSymbol();
                 },
                 'data' =>  $this->entityManager->getRepository(CompanySymbol::class)->findOneBy([
-                    'id' => 6
+                    'symbol' => "AAPL"
                 ]),
             ])
             ->add('start_date', DateType::class, [

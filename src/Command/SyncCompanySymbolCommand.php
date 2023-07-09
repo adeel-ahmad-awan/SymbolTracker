@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class SyncCompanySymbolCommand extends Command
 {
-    private $companySymbolService;
+    private CompanySymbolService $companySymbolService;
 
     public function __construct(CompanySymbolService $companySymbolService)
     {
@@ -28,7 +28,7 @@ class SyncCompanySymbolCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            $this->companySymbolService->getSymbols();
+            $this->companySymbolService->setSymbols();
         } catch (\Exception $exception) {
             dump('Error at ', $exception->getLine(), $exception->getFile());
             dump($exception->getCode());

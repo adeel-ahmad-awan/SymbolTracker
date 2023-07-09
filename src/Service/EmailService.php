@@ -20,15 +20,12 @@ class EmailService
 
     public function sendEmail($emailAddress, $subject, $body)
     {
-
         $email = (new Email())
             ->from(self::FROM_EMAIL_ADDRESS)
             ->to($emailAddress)
             ->subject($subject)
             ->text($body);
-
         $this->mailer->send($email);
 
     }
-
 }
