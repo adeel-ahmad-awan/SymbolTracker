@@ -20,8 +20,8 @@ This project is a Symfony application for managing company symbols and displayin
 
 3. Add your database credentials:
 
-Copy the `.env.example` file to `.env` and update the database connection details with your credentials.
-Also add your api keys and mailer credentials
+Edit the `.env` file and update the database connection details with your credentials.
+Also add your api keys and mailer credentials in `.env` file
 
 4. Create the database:
 
@@ -41,7 +41,7 @@ This command will populate the database with company symbols.
 
 `symfony server:start`
 
-You should now be able to access the application in your browser at `http://localhost:8000`.
+You should now be able to access the application in your browser at `http://127.0.0.1:8000`.
 
 ## Usage
 
