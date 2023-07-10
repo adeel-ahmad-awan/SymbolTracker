@@ -6,13 +6,27 @@ use App\Entity\CompanySymbol;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ *
+ */
 class CompanySymbolService
 {
+    /**
+     * @var \Doctrine\ORM\EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @var \App\Service\HttpService
+     */
     private HttpService $httpService;
 
+    private const DATABASEFLUSHRATE = 50;
 
+    /**
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param \App\Service\HttpService             $httpService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         HttpService $httpService
@@ -22,6 +36,11 @@ class CompanySymbolService
         $this->httpService = $httpService;
     }
 
+    /**
+     * @param $data
+     *
+     * @return array
+     */
     public function getHistoricalQuote($data)
     {
         $symbol = $data["symbol"];
@@ -43,6 +62,13 @@ class CompanySymbolService
     }
 
 
+    /**
+     * @param $dataArray
+     * @param $startDate
+     * @param $endDate
+     *
+     * @return array
+     */
     public function filterHistoricalQuoteData($dataArray, $startDate, $endDate)
     {
         $prices = [];
@@ -64,6 +90,9 @@ class CompanySymbolService
         return $prices;
     }
 
+    /**
+     * @return null
+     */
     public function setSymbols()
     {
         $symbolData = $this->httpService->getStockData();
@@ -72,7 +101,7 @@ class CompanySymbolService
                 $companySymbol = new CompanySymbol();
                 $companySymbol->setSymbol($value['Symbol']);
                 $this->entityManager->persist($companySymbol);
-                if ($key % 50 == 0) {
+                if ($key % self::DATABASEFLUSHRATE == 0) {
                     $this->entityManager->flush();
                 }
             }
@@ -80,6 +109,11 @@ class CompanySymbolService
         return null;
     }
 
+    /**
+     * @param $processedData
+     *
+     * @return array
+     */
     public function getChartData($processedData)
     {
         $chartData = [

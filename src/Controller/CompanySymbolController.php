@@ -15,6 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CompanySymbolController extends AbstractController
 {
+    /**
+     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+     * @param \App\Service\CompanySymbolService                          $symbolService
+     * @param \Symfony\Component\HttpFoundation\Request                  $request
+     * @param \App\Repository\CompanySymbolRepository                    $companySymbolRepository
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/', name: 'app_company_symbol')]
     public function index(
         SessionInterface $session,
@@ -48,6 +56,13 @@ class CompanySymbolController extends AbstractController
         ]);
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+     * @param \App\Service\EmailService                                  $emailService
+     * @param \App\Service\CompanySymbolService                          $symbolService
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/show', name: 'app_show_data')]
     public function displayData(SessionInterface $session, EmailService $emailService, CompanySymbolService $symbolService): Response
     {
@@ -78,6 +93,11 @@ class CompanySymbolController extends AbstractController
         ]);
     }
 
+    /**
+     * @param \App\Repository\CompanySymbolRepository $companySymbolRepository
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/run_command', name: 'app_run_command')]
     public function addData(
         CompanySymbolRepository $companySymbolRepository

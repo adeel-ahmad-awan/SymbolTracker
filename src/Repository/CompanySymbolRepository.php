@@ -16,11 +16,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CompanySymbolRepository extends ServiceEntityRepository
 {
+    /**
+     * @param \Doctrine\Persistence\ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CompanySymbol::class);
     }
 
+    /**
+     * @param \App\Entity\CompanySymbol $entity
+     * @param bool                      $flush
+     *
+     * @return void
+     */
     public function save(CompanySymbol $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +39,12 @@ class CompanySymbolRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param \App\Entity\CompanySymbol $entity
+     * @param bool                      $flush
+     *
+     * @return void
+     */
     public function remove(CompanySymbol $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -39,6 +54,11 @@ class CompanySymbolRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return bool
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     function isTableEmpty(): bool
     {
         $qb = $this->createQueryBuilder('t');

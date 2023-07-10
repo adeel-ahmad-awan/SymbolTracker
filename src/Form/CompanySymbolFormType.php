@@ -14,14 +14,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+/**
+ * CompanySymbolFormType
+ */
 class CompanySymbolFormType extends AbstractType
 {
+    /**
+     * @var \Doctrine\ORM\EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
+
+    /**
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @param array                                        $options
+     *
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -82,6 +98,11 @@ class CompanySymbolFormType extends AbstractType
         ;
     }
 
+    /**
+     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
+     *
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

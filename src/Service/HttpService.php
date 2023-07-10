@@ -10,20 +10,46 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function PHPUnit\Framework\throwException;
 
+/**
+ *
+ */
 class HttpService
 {
+    /**
+     *
+     */
     const HTTP_GET = 'GET';
 
+    /**
+     * @var string
+     */
     private string $apiUrl = 'https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_json/data/a5bc7580d6176d60ac0b2142ca8d7df6/nasdaq-listed_json.json';
 
+    /**
+     * @var string
+     */
     private string $symbolDataUrl = 'https://yh-finance.p.rapidapi.com/stock/v3/get-historical-data';
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     private LoggerInterface $logger;
 
+    /**
+     * @var \Symfony\Contracts\HttpClient\HttpClientInterface
+     */
     private HttpClientInterface $client;
 
+    /**
+     * @var \Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface
+     */
     private ContainerBagInterface $params;
 
+    /**
+     * @param \Symfony\Contracts\HttpClient\HttpClientInterface                         $client
+     * @param \Psr\Log\LoggerInterface                                                  $logger
+     * @param \Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface $params
+     */
     public function __construct(
         HttpClientInterface $client,
         LoggerInterface $logger,
@@ -34,6 +60,14 @@ class HttpService
         $this->params = $params;
     }
 
+    /**
+     * @return null|array
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     public function getStockData()
     {
         try {
@@ -54,6 +88,20 @@ class HttpService
         return null;
     }
 
+    /**
+     * @param \App\Entity\CompanySymbol $symbol
+     * @param                           $startDate
+     * @param                           $endDate
+     * @param                           $email
+     *
+     * @return null|array|\Exception|\Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     */
     public function getHistoricalQuote(CompanySymbol $symbol, $startDate,$endDate,$email)
     {
         try {
