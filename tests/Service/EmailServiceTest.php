@@ -14,12 +14,10 @@ class EmailServiceTest extends TestCase
         $mailerMock = $this->createMock(MailerInterface::class);
         $emailService = new EmailService($mailerMock);
 
-        // Set up the expected values
         $emailAddress = 'sender@email.com';
         $subject = 'Test Subject';
         $body = 'test email body, test email body, test email body';
 
-        // Set up the expected Email object
         $expectedEmail = (new Email())
             ->from(EmailService::FROM_EMAIL_ADDRESS)
             ->to($emailAddress)

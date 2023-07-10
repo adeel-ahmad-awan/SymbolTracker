@@ -15,20 +15,14 @@ class CompanySymbolRepositoryTest extends KernelTestCase
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
-
-        // Get the entity manager and repository from the container
         $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
         $this->companySymbolRepository = $this->entityManager->getRepository(CompanySymbol::class);
-
-        // Clear the entity manager to start with a clean state
         $this->entityManager->clear();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        // Clean up the entity manager and repository
         $this->entityManager = null;
         $this->companySymbolRepository = null;
     }
@@ -36,7 +30,6 @@ class CompanySymbolRepositoryTest extends KernelTestCase
     public function testIsTableEmptyReturnsTrueWhenTableIsEmpty(): void
     {
         $result = $this->companySymbolRepository->isTableEmpty();
-
         $this->assertTrue($result);
     }
 
