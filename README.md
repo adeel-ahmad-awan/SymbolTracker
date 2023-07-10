@@ -51,3 +51,12 @@ You should now be able to access the application in your browser at `http://127.
 - An email will be sent with the processed data (email service configuration required).
 - Use the provided command `app:sync-company-symbol` to sync the company symbols at any time.
 
+## Testing
+
+The project includes a suite of automated tests to ensure its functionality. To run the tests, follow these steps:
+
+1. Make sure the project dependencies are installed:
+2. Run the tests using the following command:
+`symfony php bin/phpunit`
+
+The tests will be executed, and the results will be displayed in the terminal.
