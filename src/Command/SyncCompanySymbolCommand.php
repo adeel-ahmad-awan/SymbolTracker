@@ -29,6 +29,7 @@ class SyncCompanySymbolCommand extends Command
     {
         try {
             $this->companySymbolService->setSymbols();
+            $output->writeln('Command executed successfully');
         } catch (\Exception $exception) {
             dump('Error at ', $exception->getLine(), $exception->getFile());
             dump($exception->getCode());
