@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Show chart data{% endblock %}
+
+{% block body %}
+
+    {% for flash_message in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger">
+            {{ flash_message|raw }}
+        </div>
+    {% endfor %}
+
+    <h3 class="text-center">{{ emptyTable }}</h3>
+    <h2 class="text-center text-danger">{{ command }}</h2>
+{% endblock %}

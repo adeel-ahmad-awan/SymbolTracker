@@ -28,8 +28,11 @@ class CompanySymbolService
         $startDate = $data["start_date"];
         $endDate = $data["end_date"];
         $email = $data["email"];
+
+
         $content = $this->httpService
             ->getHistoricalQuote($symbol,$startDate,$endDate,$email);
+
         return [
             'symbol' => $symbol->getSymbol(),
             "email" => $email,

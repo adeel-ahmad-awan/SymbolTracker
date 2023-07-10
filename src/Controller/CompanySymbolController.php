@@ -24,11 +24,7 @@ class CompanySymbolController extends AbstractController
     ): Response
     {
         if ($companySymbolRepository->isTableEmpty()) {
-            return $this->render('company_symbol/index.html.twig', [
-                'controller_name' => 'CompanySymbolController',
-                'emptyTable' => "Please run the following command to set the company symbols in database before proceeding",
-                'command' => "php bin/console app:sync-company-symbol"
-            ]);
+            return $this->redirectToRoute('app_run_command');
         }
 
         $form = $this->createForm(CompanySymbolFormType::class);
@@ -79,6 +75,21 @@ class CompanySymbolController extends AbstractController
         return $this->render('company_symbol/show.html.twig', [
             'chartData' => $chartData,
             'symbol' => $processedData['symbol']
+        ]);
+    }
+
+    #[Route('/run_command', name: 'app_run_command')]
+    public function addData(
+        CompanySymbolRepository $companySymbolRepository
+    ) {
+        if (!$companySymbolRepository->isTableEmpty()) {
+            return $this->redirectToRoute('app_company_symbol');
+        }
+
+        return $this->render('company_symbol/run_command.twig', [
+            'controller_name' => 'CompanySymbolController',
+            'emptyTable' => "Please run the following command to set the company symbols in database before proceeding",
+            'command' => "php bin/console app:sync-company-symbol"
         ]);
     }
 }

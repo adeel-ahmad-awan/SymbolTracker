@@ -4,45 +4,39 @@
 
 {% block body %}
 
+    <h1 class="text-center"> Welcome </h1>
+
     {% for flash_message in app.session.flashbag.get('error') %}
         <div class="alert alert-danger">
             {{ flash_message|raw }}
         </div>
     {% endfor %}
 
-    {% if emptyTable is defined %}
-        <h3 class="text-center">{{ emptyTable }}</h3>
-        <h2 class="text-center text-danger">{{ command }}</h2>
-    {% endif %}
+    <h3 class="text-center">Please fill the details in form</h3>
 
+    {{ form_start(form) }}
 
-    {% if form is defined %}
-        <h1 class="text-center">Please fill the details in form</h1>
+    <div class="form-group">
+        {{ form_row(form.email) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.symbol) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.start_date) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.end_date) }}
+    </div>
 
-        {{ form_start(form) }}
+    <div class="form-group text-center">
+        {{ form_row(form.submit) }}
+    </div>
 
-        <div class="form-group">
-            {{ form_row(form.email) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.symbol) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.start_date) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.end_date) }}
-        </div>
+    <div class="text-danger">
+        {{ form_errors(form) }}
+    </div>
 
-        <div class="form-group text-center">
-            {{ form_row(form.submit) }}
-        </div>
-
-        <div class="text-danger">
-            {{ form_errors(form) }}
-        </div>
-
-        {{ form_end(form) }}
-    {% endif %}
+    {{ form_end(form) }}
 
 {% endblock %}

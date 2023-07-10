@@ -13,18 +13,14 @@ use function PHPUnit\Framework\throwException;
 class HttpService
 {
     const HTTP_GET = 'GET';
+
     private string $apiUrl = 'https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_json/data/a5bc7580d6176d60ac0b2142ca8d7df6/nasdaq-listed_json.json';
+
     private string $symbolDataUrl = 'https://yh-finance.p.rapidapi.com/stock/v3/get-historical-data';
 
     private LoggerInterface $logger;
-    /**
-     * @var \Symfony\Contracts\HttpClient\HttpClientInterface
-     */
 
     private HttpClientInterface $client;
-    /**
-     * @var \Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface
-     */
 
     private ContainerBagInterface $params;
 
@@ -58,7 +54,7 @@ class HttpService
         return null;
     }
 
-    public function getHistoricalQuote($symbol,$startDate,$endDate,$email)
+    public function getHistoricalQuote(CompanySymbol $symbol, $startDate,$endDate,$email)
     {
         try {
             $response = $this->client->request(
@@ -89,5 +85,4 @@ class HttpService
         }
         return null;
     }
-
 }
