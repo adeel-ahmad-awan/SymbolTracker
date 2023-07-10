@@ -10,34 +10,37 @@ This project is a Symfony application for managing company symbols and displayin
 
 ## Setup
 
-1. Clone the repository:
+- Clone the repository:
 
-`git clone https://github.com/your/repository.git`
+`git clone git@github.com:adeel-ahmad-awan/synfonyTest.git`
 
-2. Install dependencies:
+- Change directory
+`cd synfonyTest/`
 
-`composer install`
-
-3. Add your database credentials:
+- Add your database credentials:
 
 Edit the `.env` file and update the database connection details with your credentials.
 Also add your api keys and mailer credentials in `.env` file
 
-4. Create the database:
+- Install dependencies:
+
+`composer install`
+
+- Create the database:
 
 `php bin/console doctrine:database:create`
 
-5. Update the database schema:
+- Update the database schema:
 
 `php bin/console doctrine:schema:create`
 
-6. Run the command to add data:
+- Run the command to add data:
 
 `php bin/console app:sync-company-symbol`
 
 This command will populate the database with company symbols.
 
-7. Start the Symfony server:
+- Start the Symfony server:
 
 `symfony server:start`
 
@@ -56,7 +59,8 @@ You should now be able to access the application in your browser at `http://127.
 The project includes a suite of automated tests to ensure its functionality. To run the tests, follow these steps:
 
 1. Make sure the project dependencies are installed:
-2. Run the tests using the following command:
+2. Add testing Database credentials in `.env.test`
+3. Run the tests using the following command:
 `symfony php bin/phpunit`
 
 The tests will be executed, and the results will be displayed in the terminal.
