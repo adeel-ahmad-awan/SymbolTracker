@@ -47,7 +47,7 @@ You should now be able to access the application in your browser at `http://loca
 
 - Access the homepage by visiting `http://127.0.0.1:8000`. If the company symbol table is empty, you will be redirected to run the command to add data.
 - Fill in the form on the homepage to get historical quotes for a specific company symbol.
-- The processed data will be displayed on the show page at `http://localhost:8000/show`.
+- The processed data will be displayed on the show page at `http://127.0.0.1:8000/show`.
 - An email will be sent with the processed data (email service configuration required).
 - Use the provided command `app:sync-company-symbol` to sync the company symbols at any time.
 
