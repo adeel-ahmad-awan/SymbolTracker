@@ -6,13 +6,15 @@ use App\Service\CompanySymbolService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Psr\Log\NullLogger; // Import the NullLogger class
 
 class SyncCompanySymbolCommandTest extends TestCase
 {
     public function testExecute(): void
     {
         $companySymbolServiceMock = $this->createMock(CompanySymbolService::class);
-        $command = new SyncCompanySymbolCommand($companySymbolServiceMock);
+        // Pass null as the second argument
+        $command = new SyncCompanySymbolCommand($companySymbolServiceMock, new NullLogger());
         $application = new Application();
         $application->add($command);
         $commandTester = new CommandTester($command);

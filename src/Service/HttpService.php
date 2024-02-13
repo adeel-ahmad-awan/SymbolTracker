@@ -3,9 +3,15 @@
 namespace App\Service;
 
 use App\Entity\CompanySymbol;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function PHPUnit\Framework\throwException;
@@ -62,10 +68,10 @@ class HttpService
 
     /**
      * @return null|array
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function getStockData()
@@ -89,48 +95,44 @@ class HttpService
     }
 
     /**
-     * @param \App\Entity\CompanySymbol $symbol
-     * @param                           $startDate
-     * @param                           $endDate
-     * @param                           $email
-     *
-     * @return null|array|\Exception|\Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @param CompanySymbol $symbol
+     * @return null|array|\Exception|TransportExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
      */
-    public function getHistoricalQuote(CompanySymbol $symbol, $startDate,$endDate,$email)
+    public function getHistoricalQuote(CompanySymbol $symbol)
     {
         try {
             $response = $this->client->request(
-                self::HTTP_GET,
-                $this->symbolDataUrl,
+                'GET',
+                'https://www.alphavantage.co/query',
                 [
-                    'headers' => [
-                        'X-RapidAPI-Key' => $this->params->get('app.yahoo'),
-                        'X-RapidAPI-Host' => 'yh-finance.p.rapidapi.com',
-                    ],
                     'query' => [
+                        'function' => 'TIME_SERIES_MONTHLY_ADJUSTED',
                         'symbol' => $symbol->getSymbol(),
+                        'apikey' => $this->params->get('app.yahoo'),
                     ],
                 ]
             );
 
             $statusCode = $response->getStatusCode();
             $content = $response->toArray();
+
             if ($statusCode == Response::HTTP_OK) {
-                return ($content);
+                return $content;
             }
         } catch (\Exception $exception) {
-            $this->logger->error('error: ' . $exception->getMessage());
-            return ($exception);
+            $this->logger->error('Error: ' . $exception->getMessage());
+            return $exception;
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('error: ' . $e->getMessage());
-            return ($e);
+            $this->logger->error('Error: ' . $e->getMessage());
+            return $e;
         }
+
         return null;
     }
 }

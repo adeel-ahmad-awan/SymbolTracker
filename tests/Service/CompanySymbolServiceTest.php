@@ -126,27 +126,64 @@ class CompanySymbolServiceTest extends TestCase
 
         $this->assertNull($result);
     }
-
-
     public function testGetChartDataReturnsExpectedChartData(): void
     {
-        $companySymbolService = new CompanySymbolService($this->entityManagerMock, $this->httpServiceMock);
+        // Create a mock for the EntityManager and HttpService
+        $entityManagerMock = $this->createMock(EntityManagerInterface::class);
+        $httpServiceMock = $this->createMock(HttpService::class);
 
+        // Set up the CompanySymbolService instance with the mocks
+        $companySymbolService = new CompanySymbolService($entityManagerMock, $httpServiceMock);
+
+        // Set up the processed data
         $processedData = [
+            'symbol' => 'AAPL',
+            'email' => 'this@email.com',
             'quoteData' => [
+                'Meta Data' => [
+                    '1. Information' => 'Monthly Adjusted Prices and Volumes',
+                    '2. Symbol' => 'AAPL',
+                    '3. Last Refreshed' => '2024-02-09',
+                    '4. Time Zone' => 'US/Eastern',
+                ],
+                'Monthly Adjusted Time Series' => [
+                    '2024-02-09' => [
+                        '1. open' => 180.05,
+                        '2. high' => 182.88,
+                        '3. low' => 178.32,
+                        '4. close' => 180.67,
+                        '5. adjusted close' => 180.67,
+                        '6. volume' => 50165243,
+                        '7. dividend amount' => 0.22,
+                    ],
+                ],
+            ],
+            'startDate' => '2023-06-20',
+            'endDate' => '2024-02-11',
+        ];
+
+        // Call the method under test
+        $result = $companySymbolService->getChartData($processedData);
+
+        // Define expected chart data
+        $expectedChartData = [
+            'labels' => ['2024-02-09'],
+            'datasets' => [
                 [
-                    'date' => '2022/01/01',
-                    'open' => 100,
-                    'close' => 105,
+                    'label' => 'Open',
+                    'borderWidth' => 1,
+                    'data' => [180.05],
                 ],
                 [
-                    'date' => '2022/01/02',
-                    'open' => 106,
-                    'close' => 108,
+                    'label' => 'Close',
+                    'borderWidth' => 1,
+                    'data' => [180.67],
                 ],
             ],
         ];
-        $result = $companySymbolService->getChartData($processedData);
-        $this->assertIsArray($result);
+
+        // Assert that the result matches the expected chart data
+        $this->assertEquals($expectedChartData, $result);
     }
+
 }

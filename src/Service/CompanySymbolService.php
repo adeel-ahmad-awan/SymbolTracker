@@ -43,24 +43,27 @@ class CompanySymbolService
      */
     public function getHistoricalQuote($data)
     {
-        $symbol = $data["symbol"];
-        $startDate = $data["start_date"];
-        $endDate = $data["end_date"];
-        $email = $data["email"];
+        try {
+            $symbol = $data["symbol"];
+            $startDate = $data["start_date"];
+            $endDate = $data["end_date"];
+            $email = $data["email"];
 
+            $content = $this->httpService
+                ->getHistoricalQuote($symbol, $startDate, $endDate, $email);
 
-        $content = $this->httpService
-            ->getHistoricalQuote($symbol,$startDate,$endDate,$email);
+            return [
+                'symbol' => $symbol->getSymbol(),
+                "email" => $email,
+                "quoteData" => $content, // Assuming the content is returned in the desired format
+                "startDate" => $startDate->format('Y-m-d'),
+                "endDate" => $endDate->format('Y-m-d'),
+            ];
 
-        return [
-            'symbol' => $symbol->getSymbol(),
-            "email" => $email,
-            "quoteData" => $this->filterHistoricalQuoteData($content, $startDate, $endDate),
-            "startDate" => $startDate->format('Y-m-d'),
-            "endDate" => $endDate->format('Y-m-d'),
-        ];
+        } catch (\Exception $exception) {
+            dd($exception);
+        }
     }
-
 
     /**
      * @param $dataArray
@@ -116,22 +119,46 @@ class CompanySymbolService
      */
     public function getChartData($processedData)
     {
+        // Extracting quote data from processed data
+        $quoteData = $processedData['quoteData']['Monthly Adjusted Time Series'];
+
+
+        // Initialize arrays to store chart data
+        $labels = [];
+        $openData = [];
+        $closeData = [];
+
+        // Loop through the quote data
+        foreach ($quoteData as $date => $quote) {
+            // Extracting required values
+            $labels[] = $date;
+            $openData[] = (float) $quote['1. open'];
+            $closeData[] = (float) $quote['4. close'];
+        }
+
+        // Reverse arrays to maintain chronological order
+        $labels = array_reverse($labels);
+        $openData = array_reverse($openData);
+        $closeData = array_reverse($closeData);
+
+        // Constructing chart data array
         $chartData = [
-            'labels' => array_reverse(array_column($processedData['quoteData'], 'date')),
+            'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Open',
                     'borderWidth' => 1,
-                    'data' => array_reverse(array_column($processedData['quoteData'], 'open')),
+                    'data' => $openData,
                 ],
                 [
                     'label' => 'Close',
                     'borderWidth' => 1,
-                    'data' => array_reverse(array_column($processedData['quoteData'], 'close')),
+                    'data' => $closeData,
                 ],
             ],
         ];
-        return ($chartData);
+
+        return $chartData;
     }
 
 }

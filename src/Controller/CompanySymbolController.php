@@ -7,21 +7,23 @@ use App\Repository\CompanySymbolRepository;
 use App\Service\CompanySymbolService;
 use App\Service\EmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class CompanySymbolController extends AbstractController
 {
     /**
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     * @param \App\Service\CompanySymbolService                          $symbolService
-     * @param \Symfony\Component\HttpFoundation\Request                  $request
-     * @param \App\Repository\CompanySymbolRepository                    $companySymbolRepository
+     * @param SessionInterface $session
+     * @param CompanySymbolService $symbolService
+     * @param Request $request
+     * @param CompanySymbolRepository $companySymbolRepository
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     #[Route('/', name: 'app_company_symbol')]
     public function index(
@@ -57,11 +59,12 @@ class CompanySymbolController extends AbstractController
     }
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     * @param \App\Service\EmailService                                  $emailService
-     * @param \App\Service\CompanySymbolService                          $symbolService
+     * @param SessionInterface $session
+     * @param EmailService $emailService
+     * @param CompanySymbolService $symbolService
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     * @throws TransportExceptionInterface
      */
     #[Route('/show', name: 'app_show_data')]
     public function displayData(SessionInterface $session, EmailService $emailService, CompanySymbolService $symbolService): Response
@@ -73,10 +76,23 @@ class CompanySymbolController extends AbstractController
         }
 
         try {
+            $emailBody = $this->renderView('email/email_template.html.twig', [
+                'chartData' => $processedData['quoteData']['Monthly Adjusted Time Series'],
+                'symbol' => $processedData['symbol']
+            ]);
             $emailService->sendEmail(
                 $processedData['email'],
                 "From " .  $processedData['startDate'] ." to " . $processedData['endDate'],
-                $processedData['symbol']
+                $emailBody
+            );
+
+            // Check if there's an error message in the quoteData
+            if (isset($quoteData['Error Message'])) {
+                $this->addFlash('error', 'An error occurred: ' . $quoteData['Error Message']);
+            }
+            $this->addFlash(
+                'success',
+                'An email is sent to ' . $processedData['email']
             );
         } catch (\Exception $exception) {
             $this->addFlash(
@@ -85,7 +101,10 @@ class CompanySymbolController extends AbstractController
             );
         }
 
+
         $chartData = $symbolService->getChartData($processedData);
+        $chartData['startDate'] = $processedData['startDate'];
+        $chartData['endDate'] = $processedData['endDate'];
 
         return $this->render('company_symbol/show.html.twig', [
             'chartData' => $chartData,
@@ -94,9 +113,9 @@ class CompanySymbolController extends AbstractController
     }
 
     /**
-     * @param \App\Repository\CompanySymbolRepository $companySymbolRepository
+     * @param CompanySymbolRepository $companySymbolRepository
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     #[Route('/run_command', name: 'app_run_command')]
     public function addData(

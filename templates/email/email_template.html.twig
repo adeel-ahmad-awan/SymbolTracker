@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+</head>
+<body>
+<h1>Stock Data for Symbol: {{ symbol }}</h1>
+
+<table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+    <tr style="background-color: #343a40; color: white;">
+        <th style="padding: 8px; text-align: left;">Date</th>
+        <th style="padding: 8px; text-align: left;">Open</th>
+        <th style="padding: 8px; text-align: left;">High</th>
+        <th style="padding: 8px; text-align: left;">Low</th>
+        <th style="padding: 8px; text-align: left;">Close</th>
+        <th style="padding: 8px; text-align: left;">Adjusted Close</th>
+        <th style="padding: 8px; text-align: left;">Volume</th>
+        <th style="padding: 8px; text-align: left;">Dividend Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for date, data in chartData %}
+        <tr style="background-color: {% if loop.index is even %} #f2f2f2 {% endif %};">
+            <td style="padding: 8px; text-align: left;">{{ date }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['1. open'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['2. high'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['3. low'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['4. close'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['5. adjusted close'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['6. volume'] }}</td>
+            <td style="padding: 8px; text-align: left;">{{ data['7. dividend amount'] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

@@ -5,12 +5,13 @@
 {% block body %}
 
     {% for flash_message in app.session.flashbag.get('error') %}
-        <div class="alert alert-danger">
+        <div class="alert alert-success">
             {{ flash_message|raw }}
         </div>
     {% endfor %}
 
-    <h1 class="text-center">{{ symbol }}</h1>
+    <h1 class="text-center">Stock Symbol: {{ symbol }}</h1>
+    <p class="text-center">Date Range: {{ chartData.startDate|date("j M Y") }} to {{ chartData.endDate|date("j M Y") }}</p>
 
     <canvas id="lineChart"></canvas>
 

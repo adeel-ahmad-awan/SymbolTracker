@@ -33,8 +33,8 @@ class CompanySymbolFormType extends AbstractType
     }
 
     /**
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder
-     * @param array                                        $options
+     * @param FormBuilderInterface $builder
+     * @param array $options
      *
      * @return void
      */
@@ -90,7 +90,7 @@ class CompanySymbolFormType extends AbstractType
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
-                'data' => 'adeel@ad.com'
+                'data' => 'adeelahmadawan@gmail.com'
             ])
             ->add('submit', SubmitType::class, [
                 'label'=> 'Submit',
